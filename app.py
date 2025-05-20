@@ -68,23 +68,24 @@ def display_statistics(data):
 # Fungsi utama
 def main():
     st.set_page_config(page_title="Dashboard Harga Emas di Indonesia", layout="wide")
-    
+
     if "page" not in st.session_state:
         st.session_state.page = "Dashboard Utama"
-    
-    if st.session_state.page == "Emas":
-        menu = "Harga Emas"
-        st.session_state.page = "Dashboard Utama"
-    else:
+
+    # Sidebar hanya tampil jika bukan di halaman Emas
+    if st.session_state.page != "Emas":
         st.sidebar.title("Navigasi")
         menu = st.sidebar.radio("Pilih Dashboard", ["Dashboard Utama", "Harga Emas"])
-    if menu == "Dashboard Utama":
-        st.title("Selamat Datang di Dashboard Harga Emas  di Indonesia")
+        st.session_state.page = menu
+
+    if st.session_state.page == "Dashboard Utama":
+        st.title("Selamat Datang di Dashboard Harga Emas di Indonesia")
         st.markdown("Pilih salah satu topik berikut untuk melihat detailnya:")
         if st.button("📈 Emas"):
-            st.session_state.page = "Emas"
-            st.rerun() 
-    elif menu == "Harga Emas":
+            st.session_state.page = "Harga Emas"
+            st.rerun()
+    
+    elif st.session_state.page == "Harga Emas":
         st.title("Analisis Harga Emas di Indonesia")
         data = load_data()
         st.write("Contoh Data:")
