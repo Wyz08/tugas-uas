@@ -72,7 +72,7 @@ def main():
     if "page" not in st.session_state:
         st.session_state.page = "Dashboard Utama"
     
-    if st.session_state.page == "emas":
+    if st.session_state.page == "Emas":
         menu = "Harga Emas"
         st.session_state.page = "Dashboard Utama"
     else:
