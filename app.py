@@ -67,45 +67,46 @@ def display_statistics(data):
 
 # Fungsi utama
 def main():
-    st.set_page_config(page_title="Dashboard Harga Emas di Indonesia", layout="wide")
+    st.set_page_config(page_title="Dashboard Harga Emas Indonesia", layout="wide")
 
     if "page" not in st.session_state:
         st.session_state.page = "Dashboard Utama"
 
-    # Sidebar hanya tampil jika bukan di halaman Emas
-    if st.session_state.page != "Emas":
+    if st.session_state.page == "emas":
+        menu = "Harga Emas"
+        st.session_state.page = "Dashboard Utama"
+    else:
         st.sidebar.title("Navigasi")
-        menu = st.sidebar.radio("Pilih Dashboard", ["Dashboard Utama", "Harga Emas"])
-        st.session_state.page = menu
+        menu = st.sidebar.radio("Pilih halaman", ["Dashboard Utama", "Harga Emas"])
 
-    if st.session_state.page == "Dashboard Utama":
-        st.title("Selamat Datang di Dashboard Harga Emas di Indonesia")
+    if menu == "Dashboard Utama":
+        st.title("Selamat Datang di Dashboard Harga Emas Indonesia")
         st.markdown("Pilih salah satu topik berikut untuk melihat detailnya:")
         if st.button("📈 Emas"):
-            st.session_state.page = "Harga Emas"
-            st.rerun()
-    
-    elif st.session_state.page == "Harga Emas":
+            st.session_state.page = "emas"
+            st.rerun() 
+
+    elif menu == "Harga Emas":
         st.title("Analisis Harga Emas di Indonesia")
         data = load_data()
         st.write("Contoh Data:")
         st.dataframe(data.head())
-        # Menambahkan slider untuk memilih rentang tanggal
+
+        # Slider tanggal
         start_date, end_date = st.slider(
             "Pilih rentang tanggal:",
             min_value=data.index.min().date(),
             max_value=data.index.max().date(),
             value=(data.index.min().date(), data.index.max().date())
         )
-        # Menyaring data berdasarkan rentang tanggal yang dipilih
         filtered_data = data.loc[start_date:end_date]
 
-        # Menampilkan grafik dan statistik untuk data yang telah difilter
+        # Tampilkan grafik, statistik, berita
         plot_harga(filtered_data)
         display_statistics(filtered_data)
         display_news()
 
-        # Menambahkan tombol untuk mengunduh data
+        # Tombol download
         csv = filtered_data.to_csv().encode('utf-8')
         st.download_button(
             label="Unduh Data (CSV)",
@@ -113,6 +114,7 @@ def main():
             file_name='data_harga_emas.csv',
             mime='text/csv',
         )
+
         
 if __name__ == '__main__':
     main()
